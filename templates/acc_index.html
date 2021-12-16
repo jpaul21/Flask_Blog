@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Accomplishments {% endblock %}</h1>
+    {% for post in posts %}
+        <a href="{{ url_for('accomplishments', post_id=accopmlishments['id']) }}">
+            <h2>{{ post['title'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ accomplishments['created'] }}</span>
+        <a href="{{ url_for('edit', id=accomplishments['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock %}

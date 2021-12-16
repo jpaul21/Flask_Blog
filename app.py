@@ -25,10 +25,38 @@ def index():
 	conn.close()
 	return render_template('index.html', posts=posts)
 
+@app.route('/authors')
+def authors():
+	return render_template('authors.html')
+
+@app.route('/accomplishments')
+def accomplishments():
+	conn = get_db_connection()
+	acc = conn.execute('SELECT * FROM posts').fetchall()
+	conn.close()
+	return render_template('accomplishments.html')
+
 @app.route('/<int:post_id>')
 def post(post_id):
 	post = get_post(post_id)
 	return render_template('post.html', post=post)
+
+@app.route('/add', methods=('GET', 'POST'))
+def add():
+	if request.method == 'POST':
+		title = request.form['title']
+		content = request.form['content']
+
+		if not title:
+			flash('Title is required!')
+		else:
+			conn = get_db_connection()
+			conn.execute('INSERT INTO accomplishments (title, content) VALUES (?, ?)',
+					(title, content))
+			conn.commit()
+			conn.close()
+			return redirect(url_for('add'))
+	return render_template('add.html')
 
 @app.route('/create', methods=('GET', 'POST'))
 def create():
@@ -37,7 +65,7 @@ def create():
 		content = request.form['content']
 
 		if not title:
-			flash('Title is requried!')
+			flash('Title is required!')
 		else:
 			conn = get_db_connection()
 			conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)', 
